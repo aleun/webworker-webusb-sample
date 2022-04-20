@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebWorker WebUSB Test</title>
+    <style>
+        button {
+            display: block;
+            margin-block-end: 5px;
+        }
+    </style>
+    <link rel="icon" href="data:," />
+    <script>
+        window.onmessage = (evt) => {
+            document.getElementById("devices").innerHTML = JSON.stringify(
+                evt.data,
+                undefined,
+                2
+            );
+        };
+        function requestDevice() {
+            navigator.usb.requestDevice({ filters: [] });
+        }
+        function requestDeviceTimeout() {
+            setTimeout(requestDevice, 500);
+        }
+        async function requestDeviceAsyncDelay() {
+            await new Promise((resolve) => {
+                setTimeout(() => resolve(), 100);
+            })
+            requestDevice();
+        }
+
+        addEventListener("requestDevice", requestDevice);
+        function requestDeviceEvent() {
+            dispatchEvent(new Event("requestDevice"));
+        }
+    </script>
+</head>
+
+<body>
+    <button onclick="requestDevice()">Request device: onclick handler</button>
+    <button onclick="requestDeviceTimeout()">Request device: timeout</button>
+    <button onclick="requestDeviceAsyncDelay()">Request device: async delay</button>
+    <button onclick="requestDeviceEvent()">Request device: event</button>
+    <div>
+        <pre id="devices"></pre>
+    </div>
+    <iframe src="worker.html" allow="usb" style="display: none"></iframe>
+</body>
+
+</html>
