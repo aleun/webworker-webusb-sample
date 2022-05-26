@@ -13,7 +13,9 @@
 		(() => {
 			const worker = new Worker('worker.js');
 			worker.onmessage = (evt) => {
-				window.parent.postMessage(evt.data);
+				window.parent.postMessage(evt.data, {
+					targetOrigin: "*"
+				});
 			};
 		})();
 	</script>
